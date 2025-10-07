@@ -100,6 +100,21 @@ export default function TeacherScreen() {
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [showTeacherModal, setShowTeacherModal] = useState(false);
 
+  // Helper function to generate teacher photos
+  const getTeacherPhoto = (name: string, gender: string) => {
+    const photos = {
+      "Dr. Sarah Johnson": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      "Prof. Michael Chen": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      "Ms. Emily Davis": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      "Mr. David Wilson": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      "Dr. Lisa Wang": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+      "Mr. James Rodriguez": "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face"
+    };
+    return photos[name as keyof typeof photos] || (gender === "Female" 
+      ? "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+      : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face");
+  };
+
   // Mock data
   const teachers: Teacher[] = [
     {
@@ -120,6 +135,7 @@ export default function TeacherScreen() {
       bloodGroup: "A+",
       emergencyContact: "+1 (555) 111-2222",
       status: "active",
+      avatar: getTeacherPhoto("Dr. Sarah Johnson", "Female"),
       rating: 4.8,
       classes: ["10th Grade", "11th Grade", "12th Grade"],
       students: 45,
@@ -150,6 +166,7 @@ export default function TeacherScreen() {
       bloodGroup: "B+",
       emergencyContact: "+1 (555) 333-4444",
       status: "active",
+      avatar: getTeacherPhoto("Prof. Michael Chen", "Male"),
       rating: 4.6,
       classes: ["9th Grade", "10th Grade", "11th Grade"],
       students: 38,
@@ -180,6 +197,7 @@ export default function TeacherScreen() {
       bloodGroup: "O+",
       emergencyContact: "+1 (555) 555-6666",
       status: "on-leave",
+      avatar: getTeacherPhoto("Ms. Emily Davis", "Female"),
       rating: 4.7,
       classes: ["9th Grade", "10th Grade"],
       students: 32,
@@ -210,6 +228,7 @@ export default function TeacherScreen() {
       bloodGroup: "AB+",
       emergencyContact: "+1 (555) 777-8888",
       status: "active",
+      avatar: getTeacherPhoto("Mr. David Wilson", "Male"),
       rating: 4.5,
       classes: ["11th Grade", "12th Grade"],
       students: 28,

@@ -54,6 +54,19 @@ export default function HRManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDepartment, setFilterDepartment] = useState("all");
 
+  // Helper function to generate employee photos
+  const getEmployeePhoto = (name: string, _position: string) => {
+    const photos = {
+      "Sarah Johnson": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      "Michael Chen": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      "Emily Davis": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      "David Rodriguez": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      "Lisa Wang": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+      "James Wilson": "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face"
+    };
+    return photos[name as keyof typeof photos] || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face";
+  };
+
   // Mock data
   const employees: Employee[] = [
     {
@@ -65,7 +78,8 @@ export default function HRManagement() {
       email: "sarah.johnson@school.edu",
       phone: "+1 (555) 123-4567",
       joinDate: "2020-01-15",
-      status: "active"
+      status: "active",
+      avatar: getEmployeePhoto("Sarah Johnson", "Principal")
     },
     {
       id: "2",
@@ -76,7 +90,8 @@ export default function HRManagement() {
       email: "michael.chen@school.edu",
       phone: "+1 (555) 234-5678",
       joinDate: "2021-08-20",
-      status: "active"
+      status: "active",
+      avatar: getEmployeePhoto("Michael Chen", "Math Teacher")
     },
     {
       id: "3",
@@ -87,7 +102,8 @@ export default function HRManagement() {
       email: "emily.davis@school.edu",
       phone: "+1 (555) 345-6789",
       joinDate: "2022-03-10",
-      status: "on-leave"
+      status: "on-leave",
+      avatar: getEmployeePhoto("Emily Davis", "English Teacher")
     },
     {
       id: "4",
@@ -98,7 +114,8 @@ export default function HRManagement() {
       email: "david.rodriguez@school.edu",
       phone: "+1 (555) 456-7890",
       joinDate: "2021-11-05",
-      status: "active"
+      status: "active",
+      avatar: getEmployeePhoto("David Rodriguez", "IT Administrator")
     }
   ];
 

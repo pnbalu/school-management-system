@@ -116,6 +116,19 @@ export default function LibraryScreen() {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [showBookModal, setShowBookModal] = useState(false);
 
+  // Helper function to generate book covers
+  const getBookCover = (title: string, _category: string) => {
+    const covers = {
+      "Advanced Mathematics": "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=200&h=300&fit=crop",
+      "Physics Fundamentals": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=200&h=300&fit=crop",
+      "English Literature": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop",
+      "Computer Science": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=200&h=300&fit=crop",
+      "History of World": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop",
+      "Chemistry Basics": "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=200&h=300&fit=crop"
+    };
+    return covers[title as keyof typeof covers] || "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=300&fit=crop";
+  };
+
   // Mock data
   const books: Book[] = [
     {
@@ -131,6 +144,7 @@ export default function LibraryScreen() {
       pages: 450,
       edition: "3rd Edition",
       description: "Comprehensive guide to advanced mathematical concepts including calculus, algebra, and statistics.",
+      coverImage: getBookCover("Advanced Mathematics", "Mathematics"),
       totalCopies: 5,
       availableCopies: 3,
       borrowedCopies: 2,
@@ -157,6 +171,7 @@ export default function LibraryScreen() {
       pages: 380,
       edition: "2nd Edition",
       description: "Introduction to fundamental physics principles including mechanics, thermodynamics, and electromagnetism.",
+      coverImage: getBookCover("Physics Fundamentals", "Science"),
       totalCopies: 4,
       availableCopies: 1,
       borrowedCopies: 3,
@@ -183,6 +198,7 @@ export default function LibraryScreen() {
       pages: 320,
       edition: "1st Edition",
       description: "Comprehensive study of English literature from classical to modern periods.",
+      coverImage: getBookCover("English Literature", "Literature"),
       totalCopies: 3,
       availableCopies: 0,
       borrowedCopies: 3,
@@ -209,6 +225,7 @@ export default function LibraryScreen() {
       pages: 520,
       edition: "1st Edition",
       description: "Introduction to programming concepts using modern programming languages.",
+      coverImage: getBookCover("Computer Science", "Computer Science"),
       totalCopies: 6,
       availableCopies: 4,
       borrowedCopies: 2,

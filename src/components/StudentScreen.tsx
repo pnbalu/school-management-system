@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,7 +29,9 @@ import {
   CheckCircle,
   Eye,
   User,
-  DollarSign
+  DollarSign,
+  Phone,
+  Mail
 } from "lucide-react";
 
 interface Student {
@@ -97,6 +100,25 @@ export default function StudentScreen() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showStudentModal, setShowStudentModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+
+  // Helper function to generate student photos
+  const getStudentPhoto = (name: string, gender: string) => {
+    const photos = {
+      "Alex Johnson": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      "Sarah Chen": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",
+      "Michael Rodriguez": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+      "Emily Davis": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      "David Kim": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+      "Lisa Wang": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+      "James Wilson": "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face",
+      "Maria Garcia": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face"
+    };
+    return photos[name as keyof typeof photos] || (gender === "Female" 
+      ? "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+      : "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face");
+  };
 
   // Mock data
   const students: Student[] = [
@@ -118,6 +140,7 @@ export default function StudentScreen() {
       bloodGroup: "O+",
       emergencyContact: "+1 (555) 111-2222",
       status: "active",
+      avatar: getStudentPhoto("Alex Johnson", "Male"),
       gpa: 3.8,
       attendance: 95,
       subjects: ["Mathematics", "English", "Science", "History"],
@@ -149,6 +172,7 @@ export default function StudentScreen() {
       bloodGroup: "A+",
       emergencyContact: "+1 (555) 333-4444",
       status: "active",
+      avatar: getStudentPhoto("Sarah Chen", "Female"),
       gpa: 4.0,
       attendance: 98,
       subjects: ["Mathematics", "English", "Physics", "Chemistry"],
@@ -180,6 +204,7 @@ export default function StudentScreen() {
       bloodGroup: "B+",
       emergencyContact: "+1 (555) 555-6666",
       status: "active",
+      avatar: getStudentPhoto("Michael Rodriguez", "Male"),
       gpa: 3.2,
       attendance: 87,
       subjects: ["Mathematics", "English", "Biology", "Geography"],
@@ -211,6 +236,7 @@ export default function StudentScreen() {
       bloodGroup: "AB+",
       emergencyContact: "+1 (555) 777-8888",
       status: "graduated",
+      avatar: getStudentPhoto("Emily Davis", "Female"),
       gpa: 3.9,
       attendance: 96,
       subjects: ["Mathematics", "English", "Physics", "Chemistry", "Biology"],
@@ -220,6 +246,134 @@ export default function StudentScreen() {
       feeStatus: "paid",
       lastPaymentDate: "2024-05-01",
       nextPaymentDate: "N/A",
+      totalFees: 6000,
+      paidFees: 6000,
+      pendingFees: 0
+    },
+    {
+      id: "5",
+      name: "David Kim",
+      studentId: "STU005",
+      grade: "10th",
+      section: "B",
+      email: "david.kim@student.edu",
+      phone: "+1 (555) 567-8901",
+      address: "654 Maple St, City, State 12345",
+      parentName: "Jennifer Kim",
+      parentPhone: "+1 (555) 543-2109",
+      parentEmail: "jennifer.kim@email.com",
+      enrollmentDate: "2023-09-01",
+      dateOfBirth: "2008-09-15",
+      gender: "Male",
+      bloodGroup: "O-",
+      emergencyContact: "+1 (555) 999-0000",
+      status: "active",
+      avatar: getStudentPhoto("David Kim", "Male"),
+      gpa: 3.6,
+      attendance: 92,
+      subjects: ["Mathematics", "English", "Computer Science", "Art"],
+      achievements: ["Coding Competition Winner", "Art Exhibition Participant"],
+      medicalInfo: "No known allergies",
+      transportRoute: "Route B - Uptown",
+      feeStatus: "paid",
+      lastPaymentDate: "2024-12-01",
+      nextPaymentDate: "2025-01-01",
+      totalFees: 5000,
+      paidFees: 5000,
+      pendingFees: 0
+    },
+    {
+      id: "6",
+      name: "Lisa Wang",
+      studentId: "STU006",
+      grade: "11th",
+      section: "A",
+      email: "lisa.wang@student.edu",
+      phone: "+1 (555) 678-9012",
+      address: "987 Cedar Ave, City, State 12345",
+      parentName: "Michael Wang",
+      parentPhone: "+1 (555) 432-1098",
+      parentEmail: "michael.wang@email.com",
+      enrollmentDate: "2022-09-01",
+      dateOfBirth: "2007-12-03",
+      gender: "Female",
+      bloodGroup: "A-",
+      emergencyContact: "+1 (555) 888-7777",
+      status: "active",
+      avatar: getStudentPhoto("Lisa Wang", "Female"),
+      gpa: 3.9,
+      attendance: 97,
+      subjects: ["Mathematics", "English", "Chemistry", "Biology"],
+      achievements: ["Science Fair 2nd Place", "Debate Team Member"],
+      medicalInfo: "No known conditions",
+      transportRoute: "Route A - Downtown",
+      feeStatus: "pending",
+      lastPaymentDate: "2024-11-15",
+      nextPaymentDate: "2024-12-15",
+      totalFees: 5500,
+      paidFees: 2750,
+      pendingFees: 2750
+    },
+    {
+      id: "7",
+      name: "James Wilson",
+      studentId: "STU007",
+      grade: "9th",
+      section: "B",
+      email: "james.wilson@student.edu",
+      phone: "+1 (555) 789-0123",
+      address: "147 Birch Lane, City, State 12345",
+      parentName: "Sarah Wilson",
+      parentPhone: "+1 (555) 321-0987",
+      parentEmail: "sarah.wilson@email.com",
+      enrollmentDate: "2024-09-01",
+      dateOfBirth: "2009-04-20",
+      gender: "Male",
+      bloodGroup: "B-",
+      emergencyContact: "+1 (555) 777-6666",
+      status: "active",
+      avatar: getStudentPhoto("James Wilson", "Male"),
+      gpa: 3.1,
+      attendance: 89,
+      subjects: ["Mathematics", "English", "History", "Physical Education"],
+      achievements: ["Basketball Team Member"],
+      medicalInfo: "No known allergies",
+      transportRoute: "Route C - Suburbs",
+      feeStatus: "paid",
+      lastPaymentDate: "2024-12-01",
+      nextPaymentDate: "2025-01-01",
+      totalFees: 4500,
+      paidFees: 4500,
+      pendingFees: 0
+    },
+    {
+      id: "8",
+      name: "Maria Garcia",
+      studentId: "STU008",
+      grade: "12th",
+      section: "C",
+      email: "maria.garcia@student.edu",
+      phone: "+1 (555) 890-1234",
+      address: "258 Spruce St, City, State 12345",
+      parentName: "Carlos Garcia",
+      parentPhone: "+1 (555) 210-9876",
+      parentEmail: "carlos.garcia@email.com",
+      enrollmentDate: "2021-09-01",
+      dateOfBirth: "2006-08-10",
+      gender: "Female",
+      bloodGroup: "AB-",
+      emergencyContact: "+1 (555) 666-5555",
+      status: "active",
+      avatar: getStudentPhoto("Maria Garcia", "Female"),
+      gpa: 4.1,
+      attendance: 99,
+      subjects: ["Mathematics", "English", "Physics", "Spanish", "Art"],
+      achievements: ["Valedictorian Candidate", "Spanish Club President", "Art Scholarship Winner"],
+      medicalInfo: "No known conditions",
+      transportRoute: "Route A - Downtown",
+      feeStatus: "paid",
+      lastPaymentDate: "2024-12-01",
+      nextPaymentDate: "2025-01-01",
       totalFees: 6000,
       paidFees: 6000,
       pendingFees: 0
@@ -271,6 +425,66 @@ export default function StudentScreen() {
       teacher: "Dr. Brown",
       semester: "Fall 2024",
       year: "2024"
+    },
+    {
+      id: "5",
+      studentId: "STU005",
+      studentName: "David Kim",
+      subject: "Computer Science",
+      assignment: "Programming Project",
+      score: 92,
+      maxScore: 100,
+      percentage: 92,
+      grade: "A-",
+      date: "2024-12-10",
+      teacher: "Mr. Rodriguez",
+      semester: "Fall 2024",
+      year: "2024"
+    },
+    {
+      id: "6",
+      studentId: "STU006",
+      studentName: "Lisa Wang",
+      subject: "Chemistry",
+      assignment: "Lab Report",
+      score: 88,
+      maxScore: 100,
+      percentage: 88,
+      grade: "B+",
+      date: "2024-12-12",
+      teacher: "Dr. Johnson",
+      semester: "Fall 2024",
+      year: "2024"
+    },
+    {
+      id: "7",
+      studentId: "STU007",
+      studentName: "James Wilson",
+      subject: "History",
+      assignment: "Essay",
+      score: 76,
+      maxScore: 100,
+      percentage: 76,
+      grade: "C+",
+      date: "2024-12-08",
+      teacher: "Ms. Davis",
+      semester: "Fall 2024",
+      year: "2024"
+    },
+    {
+      id: "8",
+      studentId: "STU008",
+      studentName: "Maria Garcia",
+      subject: "Spanish",
+      assignment: "Oral Presentation",
+      score: 96,
+      maxScore: 100,
+      percentage: 96,
+      grade: "A",
+      date: "2024-12-14",
+      teacher: "Prof. Martinez",
+      semester: "Fall 2024",
+      year: "2024"
     }
   ];
 
@@ -299,6 +513,39 @@ export default function StudentScreen() {
       reason: "Traffic delay",
       teacher: "Dr. Brown",
       subject: "Science"
+    },
+    {
+      id: "4",
+      studentId: "STU005",
+      date: "2024-12-15",
+      status: "present",
+      teacher: "Mr. Rodriguez",
+      subject: "Computer Science"
+    },
+    {
+      id: "5",
+      studentId: "STU006",
+      date: "2024-12-15",
+      status: "present",
+      teacher: "Dr. Johnson",
+      subject: "Chemistry"
+    },
+    {
+      id: "6",
+      studentId: "STU007",
+      date: "2024-12-15",
+      status: "absent",
+      reason: "Sick",
+      teacher: "Ms. Davis",
+      subject: "History"
+    },
+    {
+      id: "7",
+      studentId: "STU008",
+      date: "2024-12-15",
+      status: "present",
+      teacher: "Prof. Martinez",
+      subject: "Spanish"
     }
   ];
 
@@ -310,6 +557,16 @@ export default function StudentScreen() {
     const matchesStatus = filterStatus === "all" || student.status === filterStatus;
     return matchesSearch && matchesGrade && matchesStatus;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const totalStudents = students.length;
   const activeStudents = students.filter(s => s.status === "active").length;
@@ -367,6 +624,57 @@ export default function StudentScreen() {
             </div>
           </DialogTitle>
         </DialogHeader>
+        
+        {/* Quick Parent Contact - Prominent at the top */}
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-blue-800">
+              <Users className="h-5 w-5" />
+              Parent Contact Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 rounded-full">
+                  <User className="h-4 w-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-800">Parent Name</p>
+                  <p className="text-lg font-semibold">{student.parentName}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-green-100 rounded-full">
+                  <Phone className="h-4 w-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-green-800">Phone</p>
+                  <p className="text-lg font-semibold">{student.parentPhone}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-purple-100 rounded-full">
+                  <Mail className="h-4 w-4 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-purple-800">Email</p>
+                  <p className="text-lg font-semibold">{student.parentEmail}</p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 flex gap-2">
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                Call Parent
+              </Button>
+              <Button variant="outline" size="sm" className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                Email Parent
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Personal Information */}
@@ -539,7 +847,7 @@ export default function StudentScreen() {
   return (
     <div className="space-y-6">
       {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -630,6 +938,30 @@ export default function StudentScreen() {
                 </div>
                 <div className="p-3 rounded-full bg-orange-100 text-orange-600">
                   <Calendar className="h-5 w-5" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <Card className="card-hover">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Parent Contacts</p>
+                  <p className="text-2xl font-bold">{students.length}</p>
+                  <p className="text-xs text-indigo-600 flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    Available for contact
+                  </p>
+                </div>
+                <div className="p-3 rounded-full bg-indigo-100 text-indigo-600">
+                  <User className="h-5 w-5" />
                 </div>
               </div>
             </CardContent>
@@ -773,6 +1105,7 @@ export default function StudentScreen() {
                     <TableHead>Student</TableHead>
                     <TableHead>Student ID</TableHead>
                     <TableHead>Grade/Section</TableHead>
+                    <TableHead>Parent</TableHead>
                     <TableHead>GPA</TableHead>
                     <TableHead>Attendance</TableHead>
                     <TableHead>Fee Status</TableHead>
@@ -781,7 +1114,7 @@ export default function StudentScreen() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredStudents.map((student, index) => (
+                  {paginatedStudents.map((student, index) => (
                     <motion.tr
                       key={student.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -805,6 +1138,59 @@ export default function StudentScreen() {
                       </TableCell>
                       <TableCell className="font-mono">{student.studentId}</TableCell>
                       <TableCell>{student.grade} - {student.section}</TableCell>
+                      <TableCell>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="ghost" className="h-auto p-0 text-left justify-start">
+                              <div>
+                                <p className="font-medium text-sm">{student.parentName}</p>
+                                <p className="text-xs text-muted-foreground">{student.parentPhone}</p>
+                              </div>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-80">
+                            <div className="space-y-4">
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10">
+                                  <AvatarFallback>
+                                    {student.parentName.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <h4 className="font-semibold">{student.parentName}</h4>
+                                  <p className="text-sm text-muted-foreground">Parent of {student.name}</p>
+                                </div>
+                              </div>
+                              <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                  <Phone className="h-4 w-4 text-green-600" />
+                                  <div>
+                                    <p className="text-sm font-medium">Phone</p>
+                                    <p className="text-sm">{student.parentPhone}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <Mail className="h-4 w-4 text-blue-600" />
+                                  <div>
+                                    <p className="text-sm font-medium">Email</p>
+                                    <p className="text-sm">{student.parentEmail}</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 pt-2 border-t">
+                                <Button variant="outline" size="sm" className="flex-1">
+                                  <Phone className="h-4 w-4 mr-2" />
+                                  Call
+                                </Button>
+                                <Button variant="outline" size="sm" className="flex-1">
+                                  <Mail className="h-4 w-4 mr-2" />
+                                  Email
+                                </Button>
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableCell>
                       <TableCell>
                         <span className={`font-semibold ${getGradeColor(student.gpa || 0 * 100)}`}>
                           {student.gpa ? student.gpa.toFixed(1) : 'N/A'}
@@ -837,6 +1223,22 @@ export default function StudentScreen() {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            title="Contact Parent"
+                            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          >
+                            <Phone className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            title="Email Parent"
+                            className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                          >
+                            <Mail className="h-4 w-4" />
+                          </Button>
                           <Button variant="ghost" size="sm">
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -854,8 +1256,47 @@ export default function StudentScreen() {
               </Table>
             </CardContent>
           </Card>
+          
+          {/* Pagination Controls */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {startIndex + 1} to {Math.min(endIndex, filteredStudents.length)} of {filteredStudents.length} students
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handlePageChange(page)}
+                    className="w-8 h-8 p-0"
+                  >
+                    {page}
+                  </Button>
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
         </motion.div>
       )}
+
 
       {activeTab === "academic" && (
         <motion.div

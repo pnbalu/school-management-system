@@ -147,6 +147,66 @@ export default function FinanceScreen() {
       paymentMethod: "Credit Card",
       reference: "TXN005",
       department: "IT"
+    },
+    {
+      id: "6",
+      type: "expense",
+      category: "Supplies",
+      description: "Office supplies and stationery",
+      amount: 2500,
+      date: "2024-12-05",
+      status: "completed",
+      paymentMethod: "Cash",
+      reference: "TXN006",
+      department: "Administration"
+    },
+    {
+      id: "7",
+      type: "expense",
+      category: "Maintenance",
+      description: "Building maintenance and repairs",
+      amount: 12000,
+      date: "2024-12-03",
+      status: "completed",
+      paymentMethod: "Bank Transfer",
+      reference: "TXN007",
+      department: "Maintenance"
+    },
+    {
+      id: "8",
+      type: "expense",
+      category: "Utilities",
+      description: "Internet and phone services",
+      amount: 3500,
+      date: "2024-12-01",
+      status: "completed",
+      paymentMethod: "Online Payment",
+      reference: "TXN008",
+      department: "IT"
+    },
+    {
+      id: "9",
+      type: "expense",
+      category: "Supplies",
+      description: "Laboratory chemicals and materials",
+      amount: 8000,
+      date: "2024-11-28",
+      status: "completed",
+      paymentMethod: "Bank Transfer",
+      reference: "TXN009",
+      department: "Science"
+    },
+    {
+      id: "10",
+      type: "expense",
+      category: "Equipment",
+      description: "Sports equipment for gym",
+      amount: 5500,
+      date: "2024-11-25",
+      status: "completed",
+      paymentMethod: "Credit Card",
+      reference: "TXN010",
+      department: "Physical Education"
     }
   ];
 
@@ -476,7 +536,7 @@ export default function FinanceScreen() {
 
       {/* Tabs */}
       <div className="flex space-x-1 bg-muted p-1 rounded-lg">
-        {["overview", "transactions", "budgets", "invoices", "reports"].map((tab) => (
+        {["overview", "transactions", "expenses", "budgets", "invoices", "reports"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -756,6 +816,133 @@ export default function FinanceScreen() {
                           </Button>
                           <Button variant="ghost" size="sm">
                             <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </motion.tr>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {activeTab === "expenses" && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingDown className="h-5 w-5 text-red-500" />
+                  Expense Management
+                </CardTitle>
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search expenses..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 w-64"
+                    />
+                  </div>
+                  <Select value={filterType} onValueChange={setFilterType}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      <SelectItem value="Salaries">Salaries</SelectItem>
+                      <SelectItem value="Utilities">Utilities</SelectItem>
+                      <SelectItem value="Maintenance">Maintenance</SelectItem>
+                      <SelectItem value="Supplies">Supplies</SelectItem>
+                      <SelectItem value="Equipment">Equipment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Expense
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Department</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions
+                    .filter(t => t.type === "expense")
+                    .filter(t => 
+                      t.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      t.department?.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .filter(t => filterType === "all" || t.category === filterType)
+                    .filter(t => filterStatus === "all" || t.status === filterStatus)
+                    .map((transaction, index) => (
+                    <motion.tr
+                      key={transaction.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="hover:bg-muted/50"
+                    >
+                      <TableCell>{new Date(transaction.date).toLocaleDateString()}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                          {transaction.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="max-w-xs truncate">{transaction.description}</TableCell>
+                      <TableCell className="font-semibold text-red-600">
+                        -${transaction.amount.toLocaleString()}
+                      </TableCell>
+                      <TableCell>{transaction.department}</TableCell>
+                      <TableCell>
+                        <Badge className={
+                          transaction.status === "completed" ? "bg-green-100 text-green-800" :
+                          transaction.status === "pending" ? "bg-yellow-100 text-yellow-800" :
+                          "bg-red-100 text-red-800"
+                        }>
+                          {transaction.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button variant="ghost" size="sm">
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            <Receipt className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
